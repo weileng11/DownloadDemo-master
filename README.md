@@ -1,4 +1,4 @@
-# DownloadDemo
+# DownloadDemo       增加了七牛上传图片的类，具体操作参照MainActivity和DownloadService  DownloadTask  ActTest 已在自己项目测试通过.
 Android-Service之多线程断点续传下载
 ### Downloads
 [Demo](https://github.com/lishide/DownloadDemo/raw/master/art/app-debug.apk)

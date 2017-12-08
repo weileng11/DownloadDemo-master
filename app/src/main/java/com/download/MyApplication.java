@@ -5,6 +5,12 @@ import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 
+import com.download.qiniu.db.BaseDao;
+import com.download.qiniu.db.DatabaseHelper;
+import com.download.qiniu.db.IOperateType;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,6 +20,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.sql.SQLException;
 
 public class MyApplication extends Application {
     private static MyApplication instance;
@@ -94,6 +101,39 @@ public class MyApplication extends Application {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    //======================ormlite 数据库================================//
+    /**
+     * 得到操作数据库的dao
+     *
+     * @param clazz
+     * @return
+     */
+    public static/*protected*/ <T extends IOperateType> BaseDao<T> getDao(final Class<T> clazz) {
+        BaseDao<T> baseDao = new BaseDao<T>() {
+
+            @Override
+            public Dao<T, Integer> getDao() throws SQLException {
+                // TODO Auto-generated method stub
+                return getHelper().getDao(clazz);
+            }
+        };
+        return baseDao;
+    }
+    private static DatabaseHelper dataHelper = null;
+    private static DatabaseHelper getHelper() {
+        if (dataHelper == null) {
+            dataHelper = OpenHelperManager.getHelper(MyApplication.getInstance(), DatabaseHelper.class);
+        }
+        return dataHelper;
+    }
+
+    private void replaceHelper() {
+        if (dataHelper != null) {
+            OpenHelperManager.releaseHelper();
+            dataHelper = null;
         }
     }
 }
